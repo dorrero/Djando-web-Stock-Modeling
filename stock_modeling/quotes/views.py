@@ -1,5 +1,5 @@
 from django.shortcuts import render
-import yfinance as yf
+from .data_retriever import *
 
 # Create your views here.
 def home(request):
@@ -11,6 +11,8 @@ def home(request):
 		ticker = request.POST['ticker']
 		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_164c554030a54634b6851c5dec4dbe97")
 		#api_request = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=GOOGL&apikey=NJFJY7DW1WXTJ4U4")
+
+		retrieve(ticker)
 
 		try:
 			api = json.loads(api_request.content)
@@ -26,12 +28,3 @@ def about(request):
 
 def form(request):
 	return render(request, 'form.html', {})
-	
-def retrieve(ticker_str):
-	yfTicker = yf.Ticker(ticker_str)
-
-	data = yfTicker.history(period="max")
-	data = data.drop(columns=["Dividends", "Stock Splits"])
-
-	#print(data)
-	return data
