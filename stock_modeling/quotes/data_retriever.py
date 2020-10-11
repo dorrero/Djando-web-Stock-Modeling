@@ -1,10 +1,9 @@
 import yfinance as yf
 
-def retrieve(ticker_str):
-	yfTicker = yf.Ticker(ticker_str)
+def retrieve(ticker_str, strt_date="2015-01-01", end_date="2020-01-01", ohlc='Close'):
 
-	data = yfTicker.history(period="max")
-	data = data.drop(columns=["Dividends", "Stock Splits"])
+	data = yf.download(ticker_str, start=strt_date, end=end_date)
+	ind_data = yf.download("SPY", start=strt_date, end=end_date)
 
-	print(data)
-	return data
+	# columns = ['Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume']
+	return (data, ind_data)

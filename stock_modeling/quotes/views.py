@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .data_retriever import *
+from .stock_models import *
 
 # Create your views here.
 def home(request):
@@ -12,7 +13,9 @@ def home(request):
 		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_164c554030a54634b6851c5dec4dbe97")
 		#api_request = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=GOOGL&apikey=NJFJY7DW1WXTJ4U4")
 
-		retrieve(ticker)
+		(data, ind_data) = retrieve(ticker)
+		print("Predictions are:")
+		print(ARMA_model(data))
 
 		try:
 			api = json.loads(api_request.content)
