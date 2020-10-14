@@ -43,7 +43,7 @@ def ARIMA_model(data, ohlc='Close'):
 	returns_data = returns_data.drop(data.index[0])
 
 	# choose best p, q parameters for our model using AIC optimization
-	params = bestParams(returns_data);
+	params = bestParams(returns_data)
 	model = sm.tsa.arima_model.ARIMA(returns_data, params).fit()
 
 	model_summary = model.summary().as_text()
