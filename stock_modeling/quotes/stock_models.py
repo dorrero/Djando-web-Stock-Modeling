@@ -6,12 +6,12 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.stattools import pacf
 from statsmodels.tsa.stattools import acf
-from tqdm import tqdm_notebook
+from statsmodels.tsa.arima.model import ARIMA
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import statsmodels as sm
 from itertools import product
+
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -24,16 +24,17 @@ def ARMA_model(data, ohlc='Close'):
 
 	# choose best p, q parameters for our model using AIC optimization
 	params = bestParams(returns_data);
-	model = sm.tsa.arima_model.ARMA(returns_data, (params[0], params[2])).fit()
+	model = ARIMA(returns_data, order=(params[0], 0, params[2]))
+	res = model.fit()
 
-	model_summary = model.summary().as_text()
+	model_summary = res.summary().as_text()
 
 	# write summary to file
 	fileobj = open("quotes/model_results/ARMA_Summary.txt", 'w')
 	fileobj.write(model_summary)
 	fileobj.close()
 
-	return model
+	return (model, res)
 
 def ARIMA_model(data, ohlc='Close'):
 
@@ -44,16 +45,17 @@ def ARIMA_model(data, ohlc='Close'):
 
 	# choose best p, q parameters for our model using AIC optimization
 	params = bestParams(returns_data)
-	model = sm.tsa.arima_model.ARIMA(returns_data, params).fit()
+	model = ARIMA(returns_data, order=params)
+	res = model.fit()
 
-	model_summary = model.summary().as_text()
+	model_summary = res.summary().as_text()
 
 	# write summary to file
 	fileobj = open("quotes/model_results/ARIMA_Summary.txt", 'w')
 	fileobj.write(model_summary)
 	fileobj.close()
 
-	return model
+	return (model, res)
 
 def bestParams(data):
 

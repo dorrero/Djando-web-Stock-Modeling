@@ -20,8 +20,8 @@ def home(request):
 		historical_price_plot = saveBasicPlot(data, "quotes/plots", "historical_plot.jpg")
 
 		# models
-		arma = ARMA_model(data)
-		arima = ARIMA_model(data)
+		(arma, arma_res) = ARMA_model(data)
+		(arima, arima_res) = ARIMA_model(data)
 
 		try:
 			api = json.loads(api_request.content)
