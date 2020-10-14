@@ -15,22 +15,45 @@ from itertools import product
 import warnings
 warnings.filterwarnings('ignore')
 
-
-
-# def arma_model(data):
-# 	model = sm.tsa.arima_model.ARMA(, (5, 5))
-
 def ARMA_model(data, ohlc='Close'):
 
-	cleaned_data = np.log(data[ohlc])
-	cleaned_data = cleaned_data.diff()
-	cleaned_data = cleaned_data.drop(data.index[0])
+	# get returns from data
+	returns_data = np.log(data[ohlc])
+	returns_data = returns_data.diff()
+	returns_data = returns_data.drop(data.index[0])
 
-	params = bestParams(cleaned_data);
-	model = sm.tsa.arima_model.ARMA(cleaned_data, (params[0], params[2])).fit()
+	# choose best p, q parameters for our model using AIC optimization
+	params = bestParams(returns_data);
+	model = sm.tsa.arima_model.ARMA(returns_data, (params[0], params[2])).fit()
 
-	results = model.predict(start=50, end=1050)
-	return results
+	model_summary = model.summary().as_text()
+
+	# write summary to file
+	fileobj = open("quotes/model_results/ARMA_Summary.txt", 'w')
+	fileobj.write(model_summary)
+	fileobj.close()
+
+	return model
+
+def ARIMA_model(data, ohlc='Close'):
+
+	# get returns from data
+	returns_data = np.log(data[ohlc])
+	returns_data = returns_data.diff()
+	returns_data = returns_data.drop(data.index[0])
+
+	# choose best p, q parameters for our model using AIC optimization
+	params = bestParams(returns_data);
+	model = sm.tsa.arima_model.ARIMA(returns_data, params).fit()
+
+	model_summary = model.summary().as_text()
+
+	# write summary to file
+	fileobj = open("quotes/model_results/ARIMA_Summary.txt", 'w')
+	fileobj.write(model_summary)
+	fileobj.close()
+
+	return model
 
 def bestParams(data):
 
@@ -49,10 +72,10 @@ def bestParams(data):
 	    each = tuple(each)
 	    order_list.append(each)
 	    
-	result_df = optimize_ARIMA(order_list, exog=data)
+	result_df = AIC_optimization(order_list, exog=data)
 	return result_df['(p, d, q)'].iloc[0]
 
-def optimize_ARIMA(order_list, exog):
+def AIC_optimization(order_list, exog):
     """
         Return dataframe with parameters and corresponding AIC
         
@@ -62,7 +85,7 @@ def optimize_ARIMA(order_list, exog):
     
     results = []
     
-    for order in order_list: #tqdm_notebook(order_list):
+    for order in order_list:
         try: 
             model = SARIMAX(exog, order=order).fit(disp=-1)
         except:
@@ -73,7 +96,7 @@ def optimize_ARIMA(order_list, exog):
         
     result_df = pd.DataFrame(results)
     result_df.columns = ['(p, d, q)', 'AIC']
+
     #Sort in ascending order, lower AIC is better
     result_df = result_df.sort_values(by='AIC', ascending=True).reset_index(drop=True)
-    
     return result_df
