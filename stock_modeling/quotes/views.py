@@ -25,12 +25,4 @@ def about(request):
 
 def form(request):
 	return render(request, 'form.html', {})
-	
-def retrieve(ticker_str):
-	yfTicker = yf.Ticker(ticker_str)
 
-	data = yfTicker.history(period="max")
-	data = data.drop(columns=["Dividends", "Stock Splits"])
-
-	#print(data)
-	return data
