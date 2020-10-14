@@ -1,4 +1,8 @@
 from django.shortcuts import render
+from .data_retriever import *
+from .stock_models import *
+from .plotting import *
+
 
 # Create your views here.
 def home(request):
@@ -10,6 +14,16 @@ def home(request):
 		ticker = request.POST['ticker']
 		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_164c554030a54634b6851c5dec4dbe97")
 		#api_request = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=GOOGL&apikey=NJFJY7DW1WXTJ4U4")
+
+		# Retrieve historical stock data 
+		data = retrieve(ticker)
+
+		# make basic plot of historical stock price datap 
+		historical_price_plot = saveBasicPlot(data, "quotes/plots", "historical_plot.jpg")
+
+		# models
+		arma = ARMA_model(data)
+		arima = ARIMA_model(data)
 
 		try:
 			api = json.loads(api_request.content)
@@ -25,4 +39,3 @@ def about(request):
 
 def form(request):
 	return render(request, 'form.html', {})
-
