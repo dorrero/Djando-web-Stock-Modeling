@@ -1,5 +1,7 @@
 from statsmodels.graphics.tsaplots import plot_pacf
 from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.graphics.tsaplots import plot_predict
+
 from statsmodels.tsa.arima_process import ArmaProcess
 from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -8,21 +10,19 @@ from statsmodels.tsa.stattools import pacf
 from statsmodels.tsa.stattools import acf
 from statsmodels.tsa.arima.model import ARIMA
 
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import statsmodels as sm
 from itertools import product
 
+from .plotting import *
+
 import warnings
 warnings.filterwarnings('ignore')
 
-def ARMA_model(data, ohlc='Close'):
-
-	# get returns from data
-	returns_data = np.log(data[ohlc])
-	returns_data = returns_data.diff()
-	returns_data = returns_data.drop(data.index[0])
+def ARMA_model(data, returns_data, ohlc='Close'):
 
 	# choose best p, q parameters for our model using AIC optimization
 	params = bestParams(returns_data)
@@ -36,7 +36,12 @@ def ARMA_model(data, ohlc='Close'):
 	#fileobj.write(model_summary)
 	#fileobj.close()
 
-	return (model, res,model_summary)
+	fig, ax = plt.subplots(figsize=(10,8))
+	fig = plot_predict(res, start=returns_data.index[0], end=returns_data.index[-1], ax=ax)
+	legend = ax.legend(loc='upper left')
+
+	fig.savefig("quotes/static/plots/prediction_vs_original.jpg")
+	return (model, res, model_summary)
 
 def bestParams(data):
 
