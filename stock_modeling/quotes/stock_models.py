@@ -10,6 +10,8 @@ from statsmodels.tsa.arima.model import ARIMA
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels as sm
 from itertools import product
 
 import warnings
@@ -23,57 +25,36 @@ def ARMA_model(data, ohlc='Close'):
 	returns_data = returns_data.drop(data.index[0])
 
 	# choose best p, q parameters for our model using AIC optimization
-	params = bestParams(returns_data);
+	params = bestParams(returns_data)
 	model = ARIMA(returns_data, order=(params[0], 0, params[2]))
 	res = model.fit()
 
-	model_summary = res.summary().as_text()
-
+	#model_summary = res.summary().as_text()
+	model_summary = res.summary()
 	# write summary to file
-	fileobj = open("quotes/model_results/ARMA_Summary.txt", 'w')
-	fileobj.write(model_summary)
-	fileobj.close()
+	#fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
+	#fileobj.write(model_summary)
+	#fileobj.close()
 
-	return (model, res)
-
-def ARIMA_model(data, ohlc='Close'):
-
-	# get returns from data
-	returns_data = np.log(data[ohlc])
-	returns_data = returns_data.diff()
-	returns_data = returns_data.drop(data.index[0])
-
-	# choose best p, q parameters for our model using AIC optimization
-	params = bestParams(returns_data)
-	model = ARIMA(returns_data, order=params)
-	res = model.fit()
-
-	model_summary = res.summary().as_text()
-
-	# write summary to file
-	fileobj = open("quotes/model_results/ARIMA_Summary.txt", 'w')
-	fileobj.write(model_summary)
-	fileobj.close()
-
-	return (model, res)
+	return (model, res,model_summary)
 
 def bestParams(data):
 
 	ps = range(0, 8, 1)
 	d = 1
 	qs = range(0, 8, 1)
-	
+
 	# Create a list with all possible combination of parameters
 	parameters = product(ps, qs)
 	parameters_list = list(parameters)
 	order_list = []
-	
+
 	for each in parameters_list:
 	    each = list(each)
 	    each.insert(1, 1)
 	    each = tuple(each)
 	    order_list.append(each)
-	    
+
 	result_df = AIC_optimization(order_list, exog=data)
 	return result_df['(p, d, q)'].iloc[0]
 
