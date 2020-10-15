@@ -1,24 +1,12 @@
-from statsmodels.graphics.tsaplots import plot_pacf
-from statsmodels.graphics.tsaplots import plot_acf
-from statsmodels.tsa.arima_process import ArmaProcess
-from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.stattools import pacf
-from statsmodels.tsa.stattools import acf
 from statsmodels.tsa.arima.model import ARIMA
-
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import statsmodels as sm
 from itertools import product
-
 import warnings
 warnings.filterwarnings('ignore')
 
 def ARMA_model(data, ohlc='Close'):
-
 	# get returns from data
 	returns_data = np.log(data[ohlc])
 	returns_data = returns_data.diff()
@@ -29,13 +17,7 @@ def ARMA_model(data, ohlc='Close'):
 	model = ARIMA(returns_data, order=(params[0], 0, params[2]))
 	res = model.fit()
 
-	#model_summary = res.summary().as_text()
 	model_summary = res.summary()
-	# write summary to file
-	#fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
-	#fileobj.write(model_summary)
-	#fileobj.close()
-
 	return (model, res,model_summary)
 
 def bestParams(data):

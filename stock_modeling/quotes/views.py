@@ -4,7 +4,7 @@ from .stock_models import *
 from .plotting import *
 
 # Create your views here.
-def home(request):
+def model(request):
 	import requests
 	import json
 
@@ -32,13 +32,14 @@ def home(request):
 			api = json.loads(api_request.content)
 		except Exception as e:
 			api = "Error..."
-		return render(request, 'home.html', {'api': api,'file_content':model_summary})
+		return render(request, 'model.html', {'api': api,'file_content':model_summary})
 		
 	else:
-		return render(request, 'home.html', {'ticker': "Enter a ticker symbol above."})
+		return render(request, 'model.html', {'ticker': "Enter a ticker symbol above."})
+
+def home(request):
+	return render(request, 'home.html', {})
 
 def about(request):
 	return render(request, 'about.html', {})
 
-def form(request):
-	return render(request, 'form.html', {})
