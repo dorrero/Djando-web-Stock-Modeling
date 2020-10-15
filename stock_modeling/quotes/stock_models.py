@@ -1,24 +1,8 @@
-from statsmodels.graphics.tsaplots import plot_pacf
-from statsmodels.graphics.tsaplots import plot_acf
 from statsmodels.graphics.tsaplots import plot_predict
-
-from statsmodels.tsa.arima_process import ArmaProcess
-from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-from statsmodels.tsa.stattools import adfuller
-from statsmodels.tsa.stattools import pacf
-from statsmodels.tsa.stattools import acf
 from statsmodels.tsa.arima.model import ARIMA
-
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import statsmodels as sm
 from itertools import product
-
 from .plotting import *
-
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -34,9 +18,9 @@ def ARMA_model(data, ohlc='Close'):
 	#model_summary = res.summary().as_text()
 	model_summary = res.summary()
 	# write summary to file
-	fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
-	fileobj.write(model_summary.as_text())
-	fileobj.close()	
+	#fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
+	#fileobj.write(model_summary.as_text())
+	#fileobj.close()
 
 	fig, ax = plt.subplots(figsize=(10,8))
 	ax = data.plot(ax=ax)
