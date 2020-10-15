@@ -6,6 +6,13 @@
 	{{ ticker }}
 {% endif %}
 
+{% if file_content %}
+	<pre>
+		<!--<span style="white-space: pre-line">{{ file_content }}</span>-->
+		{{ file_content }}
+	</pre>
+{% endif %}
+
 {% if api %}
 	{% if api == "Error..." %}
 		There was a problem with your ticker symbol.
