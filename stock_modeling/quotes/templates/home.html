@@ -7,7 +7,10 @@
 {% endif %}
 
 {% if file_content %}
-	{{ file_content }}
+	<pre>
+		<!--<span style="white-space: pre-line">{{ file_content }}</span>-->
+		{{ file_content }}
+	</pre>
 {% endif %}
 
 {% if api %}

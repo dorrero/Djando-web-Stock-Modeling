@@ -22,18 +22,17 @@ def home(request):
 		historical_price_plot = saveBasicPlot(data, "quotes/static/plots", "historical_plot.jpg")
 
 		# models
-		(arma, arma_res) = ARMA_model(data)
-		(arima, arima_res) = ARIMA_model(data)
+		(arma, arma_res,model_summary) = ARMA_model(data)
 
-		f = open('quotes/static/model_results/ARMA_Summary.txt', 'r')
-		file_content = f.read()
-		f.close()
+		#f = open('quotes/static/model_results/ARMA_Summary.txt', 'r')
+		#file_content = f.read()
+		#f.close()
 
 		try:
 			api = json.loads(api_request.content)
 		except Exception as e:
 			api = "Error..."
-		return render(request, 'home.html', {'api': api,'file_content': file_content})
+		return render(request, 'home.html', {'api': api,'file_content':model_summary})
 		
 	else:
 		return render(request, 'home.html', {'ticker': "Enter a ticker symbol above."})
