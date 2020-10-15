@@ -1,5 +1,7 @@
 from statsmodels.graphics.tsaplots import plot_pacf
 from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.graphics.tsaplots import plot_predict
+
 from statsmodels.tsa.arima_process import ArmaProcess
 from statsmodels.stats.diagnostic import acorr_ljungbox
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -8,72 +10,59 @@ from statsmodels.tsa.stattools import pacf
 from statsmodels.tsa.stattools import acf
 from statsmodels.tsa.arima.model import ARIMA
 
+
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels as sm
 from itertools import product
+
+from .plotting import *
 
 import warnings
 warnings.filterwarnings('ignore')
 
 def ARMA_model(data, ohlc='Close'):
 
-	# get returns from data
-	returns_data = np.log(data[ohlc])
-	returns_data = returns_data.diff()
-	returns_data = returns_data.drop(data.index[0])
+	data = data[ohlc]
 
 	# choose best p, q parameters for our model using AIC optimization
-	params = bestParams(returns_data);
-	model = ARIMA(returns_data, order=(params[0], 0, params[2]))
+	params = bestParams(data)
+	model = ARIMA(data, order=(params[0], 0, params[2]))
 	res = model.fit()
 
-	model_summary = res.summary().as_text()
-
+	#model_summary = res.summary().as_text()
+	model_summary = res.summary()
 	# write summary to file
-	fileobj = open("quotes/model_results/ARMA_Summary.txt", 'w')
-	fileobj.write(model_summary)
-	fileobj.close()
+	fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
+	fileobj.write(model_summary.as_text())
+	fileobj.close()	
 
-	return (model, res)
+	fig, ax = plt.subplots(figsize=(10,8))
+	ax = data.plot(ax=ax)
+	fig = plot_predict(res, start=data.index[0], end=data.index[-1], ax=ax, plot_insample=False)
+	legend = ax.legend(["Actual price", "Forecast", "95% Confidence Interval"], loc='upper left')
 
-def ARIMA_model(data, ohlc='Close'):
-
-	# get returns from data
-	returns_data = np.log(data[ohlc])
-	returns_data = returns_data.diff()
-	returns_data = returns_data.drop(data.index[0])
-
-	# choose best p, q parameters for our model using AIC optimization
-	params = bestParams(returns_data)
-	model = ARIMA(returns_data, order=params)
-	res = model.fit()
-
-	model_summary = res.summary().as_text()
-
-	# write summary to file
-	fileobj = open("quotes/model_results/ARIMA_Summary.txt", 'w')
-	fileobj.write(model_summary)
-	fileobj.close()
-
-	return (model, res)
+	fig.savefig("quotes/static/plots/forecast_vs_actual.jpg")
+	return (model, res, model_summary)
 
 def bestParams(data):
 
 	ps = range(0, 8, 1)
 	d = 1
 	qs = range(0, 8, 1)
-	
+
 	# Create a list with all possible combination of parameters
 	parameters = product(ps, qs)
 	parameters_list = list(parameters)
 	order_list = []
-	
+
 	for each in parameters_list:
 	    each = list(each)
 	    each.insert(1, 1)
 	    each = tuple(each)
 	    order_list.append(each)
-	    
+
 	result_df = AIC_optimization(order_list, exog=data)
 	return result_df['(p, d, q)'].iloc[0]
 
