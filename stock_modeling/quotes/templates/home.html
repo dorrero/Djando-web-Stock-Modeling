@@ -6,6 +6,10 @@
 	{{ ticker }}
 {% endif %}
 
+{% if file_content %}
+	{{ file_content }}
+{% endif %}
+
 {% if api %}
 	{% if api == "Error..." %}
 		There was a problem with your ticker symbol.
