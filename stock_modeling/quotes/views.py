@@ -3,7 +3,6 @@ from .data_retriever import *
 from .stock_models import *
 from .plotting import *
 
-
 # Create your views here.
 def home(request):
 	import requests
@@ -15,7 +14,6 @@ def home(request):
 		start_date = request.POST['start_date']
 		end_date = request.POST['end_date']
 		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_164c554030a54634b6851c5dec4dbe97")
-		#api_request = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=GOOGL&apikey=NJFJY7DW1WXTJ4U4")
 
 		# Retrieve historical stock data 
 		data = retrieve(ticker,start_date,end_date)
@@ -24,8 +22,8 @@ def home(request):
 		historical_price_plot = saveBasicPlot(data, "quotes/static/plots", "historical_plot.jpg")
 
 		# models
-		arma = ARMA_model(data)
-		arima = ARIMA_model(data)
+		(arma, arma_res) = ARMA_model(data)
+		(arima, arima_res) = ARIMA_model(data)
 
 		f = open('quotes/static/model_results/ARMA_Summary.txt', 'r')
 		file_content = f.read()
