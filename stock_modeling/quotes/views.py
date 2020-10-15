@@ -26,7 +26,7 @@ def home(request):
 		historical_returns_plot = saveReturnsPlot(returns_data, "quotes/static/plots", "returns_plot.jpg")
 		
 		# models
-		(arma, arma_res, model_summary) = ARMA_model(data, returns_data)
+		(arma, arma_res, model_summary) = ARMA_model(data)
 
 		#f = open('quotes/static/model_results/ARMA_Summary.txt', 'r')
 		#file_content = f.read()

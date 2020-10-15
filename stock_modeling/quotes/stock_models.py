@@ -22,25 +22,28 @@ from .plotting import *
 import warnings
 warnings.filterwarnings('ignore')
 
-def ARMA_model(data, returns_data, ohlc='Close'):
+def ARMA_model(data, ohlc='Close'):
+
+	data = data[ohlc]
 
 	# choose best p, q parameters for our model using AIC optimization
-	params = bestParams(returns_data)
-	model = ARIMA(returns_data, order=(params[0], 0, params[2]))
+	params = bestParams(data)
+	model = ARIMA(data, order=(params[0], 0, params[2]))
 	res = model.fit()
 
 	#model_summary = res.summary().as_text()
 	model_summary = res.summary()
 	# write summary to file
-	#fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
-	#fileobj.write(model_summary)
-	#fileobj.close()
+	fileobj = open("quotes/static/model_results/ARMA_Summary.txt", 'w')
+	fileobj.write(model_summary.as_text())
+	fileobj.close()	
 
 	fig, ax = plt.subplots(figsize=(10,8))
-	fig = plot_predict(res, start=returns_data.index[0], end=returns_data.index[-1], ax=ax)
-	legend = ax.legend(loc='upper left')
+	ax = data.plot(ax=ax)
+	fig = plot_predict(res, start=data.index[0], end=data.index[-1], ax=ax, plot_insample=False)
+	legend = ax.legend(["Actual price", "Forecast", "95% Confidence Interval"], loc='upper left')
 
-	fig.savefig("quotes/static/plots/prediction_vs_original.jpg")
+	fig.savefig("quotes/static/plots/forecast_vs_actual.jpg")
 	return (model, res, model_summary)
 
 def bestParams(data):
