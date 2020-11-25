@@ -27,10 +27,7 @@ def model(request):
 		
 		# models
 		(arma, arma_res, model_summary) = ARMA_model(data)
-
-		#f = open('quotes/static/model_results/ARMA_Summary.txt', 'r')
-		#file_content = f.read()
-		#f.close()
+		arch = ARCH_model(returns_data)
 
 		try:
 			api = json.loads(api_request.content)
