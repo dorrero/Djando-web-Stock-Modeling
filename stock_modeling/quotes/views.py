@@ -27,7 +27,7 @@ def model(request):
 
 		# models
 		(arma, arma_res, model_summary) = ARMA_model(data)
-		(garch,garch_summary) = GARCH_model(returns_data)
+		(garch,garch_summary,pred_var) = GARCH_model(returns_data)
 		VaR = Historical_VaR(returns_data)
 		print("VaR at 99% confidence interval is:", VaR[0])
 		print("VaR at 95% confidence interval is:", VaR[1])
@@ -38,7 +38,7 @@ def model(request):
 			api = json.loads(api_request.content)
 		except Exception as e:
 			api = "Error..."
-		return render(request, 'model.html', {'api': api,'file_content':model_summary,'file_content1':garch_summary,'Var':VaR})
+		return render(request, 'model.html', {'api': api,'file_content':model_summary,'file_content1':garch_summary,'Var':VaR,'predvar':pred_var})
 
 	else:
 		return render(request, 'model.html', {'ticker': "Enter a ticker symbol above."})
