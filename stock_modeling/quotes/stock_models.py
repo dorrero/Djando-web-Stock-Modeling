@@ -2,24 +2,42 @@ from statsmodels.graphics.tsaplots import plot_predict
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.arima.model import ARIMA
 from arch import arch_model
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
 
 from itertools import product
 from .plotting import *
 import warnings
 warnings.filterwarnings('ignore')
 
-def ARCH_model(returns):
+def Historical_VaR(returns):
 
+	returns = pd.DataFrame.to_numpy(returns)
+	returns = np.sort(returns)
+	ninenine_var_idx = round(0.01 * len(returns)) - 1
+	ninefive_var_idx = round(0.05 * len(returns)) - 1
+	ninenine_var = returns[ninenine_var_idx]
+	ninefive_var = returns[ninefive_var_idx]
+
+	ninenine_es = np.mean(returns[0:ninenine_var_idx])
+	ninefive_es = np.mean(returns[0:ninefive_var_idx])
+
+	return (ninenine_var, ninefive_var, ninenine_es, ninefive_es)
+
+def GARCH_model(returns):
+
+	returns = returns * 100
 	am = arch_model(returns)
 	res = am.fit()
 	model_summary = res.summary()
 
 	print("arch model fitted")
 	# write summary to file
-	#fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
-	#fileobj.write(model_summary.as_text())
-	#fileobj.close()
-	return (res,model_summary)
+	fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
+	fileobj.write(model_summary.as_text())
+	fileobj.close()
+	return res
 
 def ARMA_model(data, ohlc='Close'):
 
