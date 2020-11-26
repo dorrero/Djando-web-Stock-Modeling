@@ -19,7 +19,7 @@ def model(request):
 		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_164c554030a54634b6851c5dec4dbe97")
 
 		# Retrieve historical stock data 
-		(data, returns_data) = retrieve(ticker, start_date, end_date)
+		(data, returns_data) = retrieve(ticker, start_date, end_date, 'Adj Close')
 
 		# make plot of historical stock price data and returns 
 		historical_price_plot = saveBasicPlot(data, "quotes/static/plots", "historical_plot.jpg")

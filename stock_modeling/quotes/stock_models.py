@@ -2,6 +2,7 @@ from statsmodels.graphics.tsaplots import plot_predict
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.arima.model import ARIMA
 from arch import arch_model
+import matplotlib.pyplot as plt
 
 from itertools import product
 from .plotting import *
@@ -10,16 +11,20 @@ warnings.filterwarnings('ignore')
 
 def ARCH_model(returns, ohlc='Close'):
 	
-	returns = returns[ohlc]
+	returns = returns * 100
 	am = arch_model(returns)
 	res = am.fit()
 	model_summary = res.summary()
 
-	print("arch model fitted")
 	# write summary to file
 	fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
 	fileobj.write(model_summary.as_text())
 	fileobj.close()
+
+	forecasts = res.forecast(horizon=5)
+	fig, ax = plt.plot(forecasts.varianc)
+	fig.savefig("quotes/static/plots/arch_forecast.jpg")
+
 	return res
 
 def ARMA_model(data, ohlc='Close'):
