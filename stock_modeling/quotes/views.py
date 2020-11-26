@@ -27,7 +27,12 @@ def model(request):
 		
 		# models
 		(arma, arma_res, model_summary) = ARMA_model(data)
-		arch = GARCH_model(returns_data)
+		garch, garch_pred_var = GARCH_model(returns_data)
+		
+		print("GARCH predicted variances are")	
+		print(garch_pred_var)
+		print()
+		
 		VaR = Historical_VaR(returns_data)
 		print("VaR at 99% confidence interval is:", VaR[0])
 		print("VaR at 95% confidence interval is:", VaR[1])
@@ -48,4 +53,3 @@ def home(request):
 
 def about(request):
 	return render(request, 'about.html', {})
-

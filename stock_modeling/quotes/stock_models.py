@@ -5,6 +5,7 @@ from arch import arch_model
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import datetime as dt
 
 from itertools import product
 from .plotting import *
@@ -28,16 +29,20 @@ def Historical_VaR(returns):
 def GARCH_model(returns):
 	
 	returns = returns * 100
-	am = arch_model(returns)
-	res = am.fit()
-	model_summary = res.summary()
+	garch = arch_model(returns, vol='garch', p=1, o=0, q=1)
+	garch_fitted = garch.fit()
+	model_summary = garch_fitted.summary()
 
 	# write summary to file
 	fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
 	fileobj.write(model_summary.as_text())
 	fileobj.close()
 
-	return res
+	# one step out-of-sample forecast
+	garch_forecast = garch_fitted.forecast(horizon=1, method='simulation')
+	pred_var = garch_forecast.variance.dropna()
+
+	return garch_fitted, pred_var
 
 def ARMA_model(data, ohlc='Close'):
 
