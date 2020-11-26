@@ -27,7 +27,12 @@ def model(request):
 		
 		# models
 		(arma, arma_res, model_summary) = ARMA_model(data)
-		arch = ARCH_model(returns_data)
+		arch = GARCH_model(returns_data)
+		VaR = Historical_VaR(returns_data)
+		print("VaR at 99% confidence interval is:", VaR[0])
+		print("VaR at 95% confidence interval is:", VaR[1])
+		print("Expected shortfall at 99% confidence interval is:", VaR[2])
+		print("Expected shortfall at 95% confidence interval is:", VaR[3])
 
 		try:
 			api = json.loads(api_request.content)
