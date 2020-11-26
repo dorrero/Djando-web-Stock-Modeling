@@ -14,27 +14,20 @@ def model(request):
 		ticker = request.POST['ticker']
 		start_date = request.POST['start_date']
 		end_date = request.POST['end_date']
-		
+
 		# get stock quote
 		api_request = requests.get("https://cloud.iexapis.com/stable/stock/" + ticker + "/quote?token=pk_164c554030a54634b6851c5dec4dbe97")
 
-		# Retrieve historical stock data 
+		# Retrieve historical stock data
 		(data, returns_data) = retrieve(ticker, start_date, end_date)
 
-        # make plot of historical stock price data and returns
-        historical_price_plot = saveBasicPlot(data, "quotes/static/plots", "historical_plot.jpg")
-        historical_returns_plot = saveReturnsPlot(returns_data, "quotes/static/plots", "returns_plot.jpg")
-
-        # models
-        (arma, arma_res, model_summary) = ARMA_model(data)
-        (arch, arch_summary) = ARCH_model(returns_data)
 		# make plot of historical stock price data and returns
 		historical_price_plot = saveBasicPlot(data, "quotes/static/plots", "historical_plot.jpg")
 		historical_returns_plot = saveReturnsPlot(returns_data, "quotes/static/plots", "returns_plot.jpg")
 
 		# models
 		(arma, arma_res, model_summary) = ARMA_model(data)
-		arch = GARCH_model(returns_data)
+		(garch,garch_summary) = GARCH_model(returns_data)
 		VaR = Historical_VaR(returns_data)
 		print("VaR at 99% confidence interval is:", VaR[0])
 		print("VaR at 95% confidence interval is:", VaR[1])
@@ -45,8 +38,8 @@ def model(request):
 			api = json.loads(api_request.content)
 		except Exception as e:
 			api = "Error..."
-		return render(request, 'model.html', {'api': api,'file_content':model_summary})
-		
+		return render(request, 'model.html', {'api': api,'file_content':model_summary,'file_content1':garch_summary,'Var':VaR})
+
 	else:
 		return render(request, 'model.html', {'ticker': "Enter a ticker symbol above."})
 

@@ -34,10 +34,10 @@ def GARCH_model(returns):
 
 	print("arch model fitted")
 	# write summary to file
-	fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
-	fileobj.write(model_summary.as_text())
-	fileobj.close()
-	return res
+	#fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
+	#fileobj.write(model_summary.as_text())
+	#fileobj.close()
+	return (res,model_summary)
 
 def ARMA_model(data, ohlc='Close'):
 

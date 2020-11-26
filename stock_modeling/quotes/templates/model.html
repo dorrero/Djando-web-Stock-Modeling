@@ -26,7 +26,15 @@
         {% endif %}
     {% endif %}
 
-
+    <br/> <br/> <br/>
+            <div class="card col-sm-12  bg-info text-white" style="text-align:center;">
+                <br/>
+                <h6>VaR at 99% confidence interval is: {{Var.0}}</h6><br/>
+		        <h6>VaR at 95% confidence interval is: {{Var.1}}</h6><br/>
+		        <h6>Expected shortfall at 99% confidence interval is: {{Var.2}}</h6><br/>
+                <h6>Expected shortfall at 95% confidence interval is: {{Var.3}}</h6><br/>
+                <br/>
+            </div>
     {% load static %}
 
         <br/> <br/> <br/>
@@ -52,7 +60,7 @@
             <div class="card col-sm-12">
                 <img class="card-img-top" src="{% static 'plots/forecast_vs_actual.jpg' %}" alt="Card image cap">
                 <div class="card-body">
-                <h5 class="card-title" style="text-align:center;">Model Forecast vs Actual Price over given Time Range </h5>
+                <h5 class="card-title" style="text-align:center;">ARMA Model Forecast vs Actual Price over given Time Range </h5>
                 </div>
             </div>
         </div>
@@ -79,4 +87,6 @@
             {% endif %}
         </div>
     </div>
+
+    <p>{{Var.0}}</p>
 {% endblock %}
