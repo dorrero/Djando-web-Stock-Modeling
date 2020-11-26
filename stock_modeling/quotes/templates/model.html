@@ -10,32 +10,57 @@
             There was a problem with your ticker symbol.
             Please try again.
         {% else %}
-
-            <h1>{{ api.companyName }}</h1><br/>
-            <h4>Stock quote</h4>
-            Price: {{ api.latestPrice }}<br/>
-            Previous Close: {{ api.previousClose }}<br/>
-            Market Cap: {{ api.marketCap }}<br/>
-            YTD change: {{ api.ytdChange }}<br/>
-            52Wk High: {{ api.week52High }}<br/>
-            52Wk Low: {{ api.week52Low }}<br/>
-
+            <br/> <br/> <br/>
+            <div class="card col-sm-12  bg-info text-white" style="text-align:center;">
+                <br/>
+                <h1>{{ api.companyName }}</h1><br/>
+                <h4>Stock quote</h4>
+                Price: {{ api.latestPrice }}<br/>
+                Previous Close: {{ api.previousClose }}<br/>
+                Market Cap: {{ api.marketCap }}<br/>
+                YTD change: {{ api.ytdChange }}<br/>
+                52Wk High: {{ api.week52High }}<br/>
+                52Wk Low: {{ api.week52Low }}<br/>
+                <br/>
+            </div>
         {% endif %}
     {% endif %}
 
 
     {% load static %}
-        <img src="{% static 'plots/historical_plot.jpg' %}" class="img-fluid" alt="Responsive image"/>
-        <img src="{% static 'plots/returns_plot.jpg' %}" class="img-fluid" alt="Responsive image"/>
-        <br/>
-        <br/>
-        <br/>
-        <h4> Model Forecast vs Actual Price over given Time Range </h4>
-        <img src="{% static 'plots/forecast_vs_actual.jpg' %}" class="img-fluid" alt="Responsive image"/>
+
+        <br/> <br/> <br/>
+
+        <div class="row">
+            <div class="card col-sm-6">
+                <img class="card-img-top" src="{% static 'plots/historical_plot.jpg' %}" alt="Card image cap">
+                <div class="card-body">
+                <h5 class="card-title" style="text-align:center;">Historical Data plot</h5>
+                </div>
+            </div>
+            <div class="card col-sm-6">
+                <img class="card-img-top" src="{% static 'plots/returns_plot.jpg' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title" style="text-align:center;">Return Data plot</h5>
+                </div>
+            </div>
+        </div>
+
+        <br/> <br/> <br/>
+
+        <div class="row">
+            <div class="card col-sm-12">
+                <img class="card-img-top" src="{% static 'plots/forecast_vs_actual.jpg' %}" alt="Card image cap">
+                <div class="card-body">
+                <h5 class="card-title" style="text-align:center;">Model Forecast vs Actual Price over given Time Range </h5>
+                </div>
+            </div>
+        </div>
+
 
     <br/><br/>
-    <div class="card">
-        <div class="card-body">
+    <div class="card" style="text-align:center;">
+        <div class="card-body bg-dark text-white">
             {% if file_content %}
 	            <pre>
 		            {{ file_content }}
@@ -44,6 +69,14 @@
         </div>
     </div>
 
-
-
+    <br/><br/>
+    <div class="card" style="text-align:center;">
+        <div class="card-body bg-dark text-white">
+            {% if file_content1 %}
+	            <pre>
+		            {{ file_content1 }}
+	            </pre>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

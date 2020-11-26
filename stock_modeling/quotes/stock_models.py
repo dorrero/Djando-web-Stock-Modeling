@@ -8,19 +8,18 @@ from .plotting import *
 import warnings
 warnings.filterwarnings('ignore')
 
-def ARCH_model(returns, ohlc='Close'):
-	
-	returns = returns[ohlc]
+def ARCH_model(returns):
+
 	am = arch_model(returns)
 	res = am.fit()
 	model_summary = res.summary()
 
 	print("arch model fitted")
 	# write summary to file
-	fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
-	fileobj.write(model_summary.as_text())
-	fileobj.close()
-	return res
+	#fileobj = open("quotes/static/model_results/ARCH_Summary.txt", 'w')
+	#fileobj.write(model_summary.as_text())
+	#fileobj.close()
+	return (res,model_summary)
 
 def ARMA_model(data, ohlc='Close'):
 
